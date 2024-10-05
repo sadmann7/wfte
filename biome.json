@@ -22,6 +22,9 @@
       },
       "nursery": {
         "useSortedClasses": "warn"
+      },
+      "style": {
+        "useImportType": "warn"
       }
     }
   },

@@ -1,7 +1,7 @@
 export const siteConfig = {
-  name: "wfte",
+  name: "Cozy UI",
   description:
-    "all i wanna do is trade this life with something new, holding on to what i haven't got",
+    "Cozy UI is a simple and modern ui library for your next project",
   links: {
     twitter: "https://x.com/sadmann7",
     github: "https://github.com/sadmann7/wfte",
