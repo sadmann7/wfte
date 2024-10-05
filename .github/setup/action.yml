@@ -1,5 +1,5 @@
 name: Setup Workflow
-description: Composite action that sets up bun and installs dependencies
+description: Composite action that sets up pnpm and installs dependencies
 runs:
   using: 'composite'
   steps:
@@ -7,9 +7,10 @@ runs:
       with:
         node-version: 20.x
 
-    - uses: oven-sh/setup-bun@v1
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
       with:
-        bun-version: 1.0.26
+        version: 9.2.0
 
-    - run: bun install
+    - run: pnpm install
       shell: bash
