@@ -12,6 +12,8 @@ import type { Scope } from "@radix-ui/react-context";
 
 type Direction = "ltr" | "rtl";
 
+type TValue = string | string[];
+
 /* -------------------------------------------------------------------------------------------------
  * Combobox
  * -----------------------------------------------------------------------------------------------*/
@@ -25,7 +27,7 @@ const [createComboboxContext, createComboboxScope] = createContextScope(
 );
 const useMenuScope = createMenuScope();
 
-type ComboboxContextValue = {
+interface ComboboxContextValue {
   triggerId: string;
   triggerRef: React.RefObject<HTMLButtonElement>;
   contentId: string;
@@ -33,7 +35,11 @@ type ComboboxContextValue = {
   onOpenChange(open: boolean): void;
   onOpenToggle(): void;
   modal: boolean;
-};
+  multiple?: boolean;
+  value?: TValue | TValue[];
+  onValueChange(value: TValue | TValue[]): void;
+  disabled?: boolean;
+}
 
 const [ComboboxProvider, useComboboxContext] =
   createComboboxContext<ComboboxContextValue>(COMBOBOX_NAME);
@@ -45,11 +51,13 @@ interface ComboboxProps {
   defaultOpen?: boolean;
   onOpenChange?(open: boolean): void;
   modal?: boolean;
+  defaultValue?: TValue | TValue[];
+  value?: TValue | TValue[];
+  onValueChange?(value: TValue | TValue[]): void;
+  disabled?: boolean;
 }
 
-const Combobox: React.FC<ComboboxProps> = (
-  props: ScopedProps<ComboboxProps>,
-) => {
+function Combobox(props: ScopedProps<ComboboxProps>) {
   const {
     __scopeCombobox,
     children,
@@ -58,6 +66,10 @@ const Combobox: React.FC<ComboboxProps> = (
     defaultOpen,
     onOpenChange,
     modal = true,
+    disabled = false,
+    defaultValue,
+    value: valueProp,
+    onValueChange,
   } = props;
   const menuScope = useMenuScope(__scopeCombobox);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -65,6 +77,12 @@ const Combobox: React.FC<ComboboxProps> = (
     prop: openProp,
     defaultProp: defaultOpen,
     onChange: onOpenChange,
+  });
+
+  const [value, setValue] = useControllableState({
+    prop: valueProp,
+    defaultProp: defaultValue,
+    onChange: onValueChange,
   });
 
   return (
@@ -80,6 +98,9 @@ const Combobox: React.FC<ComboboxProps> = (
         [setOpen],
       )}
       modal={modal}
+      value={value}
+      onValueChange={setValue}
+      disabled={disabled}
     >
       <MenuPrimitive.Root
         {...menuScope}
@@ -92,7 +113,7 @@ const Combobox: React.FC<ComboboxProps> = (
       </MenuPrimitive.Root>
     </ComboboxProvider>
   );
-};
+}
 
 Combobox.displayName = COMBOBOX_NAME;
 

@@ -51,9 +51,9 @@
       "**/dist",
       "**/build",
       "**/public",
+      "**/.turbo",
       "**/.next",
-      "**/.source",
-      "**/tailwind.config.ts"
+      "**/.source"
     ]
   }
 }
