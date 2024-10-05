@@ -22,10 +22,12 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-      - uses: ./.github/setup
-      - uses: pnpm/action-setup@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 9
+      - uses: ./.github/setup
+
       - run: pnpm turbo build
 
   lint:
@@ -33,10 +35,12 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-      - uses: ./.github/setup
-      - uses: pnpm/action-setup@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 9
+      - uses: ./.github/setup
+
       - run: pnpm lint
 
   test:
@@ -44,6 +48,10 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - uses: ./.github/setup
 
-      - run: bun turbo test typecheck --filter "@acme/env*"
+      - run: pnpm turbo test typecheck --filter "@acme/env*"
