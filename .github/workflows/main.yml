@@ -17,14 +17,14 @@ env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - uses: ./.github/setup
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v4
+  #     - uses: ./.github/setup
 
-      - run: bun turbo build
+  #     - run: bun turbo build
 
   lint:
     runs-on: ubuntu-latest

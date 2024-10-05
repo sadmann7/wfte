@@ -13,19 +13,19 @@ import type { Scope } from "@radix-ui/react-context";
 type Direction = "ltr" | "rtl";
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenu
+ * Combobox
  * -----------------------------------------------------------------------------------------------*/
 
-const DROPDOWN_MENU_NAME = "DropdownMenu";
+const COMBOBOX_NAME = "Combobox";
 
-type ScopedProps<P> = P & { __scopeDropdownMenu?: Scope };
-const [createDropdownMenuContext, createDropdownMenuScope] = createContextScope(
-  DROPDOWN_MENU_NAME,
+type ScopedProps<P> = P & { __scopeCombobox?: Scope };
+const [createComboboxContext, createComboboxScope] = createContextScope(
+  COMBOBOX_NAME,
   [createMenuScope],
 );
 const useMenuScope = createMenuScope();
 
-type DropdownMenuContextValue = {
+type ComboboxContextValue = {
   triggerId: string;
   triggerRef: React.RefObject<HTMLButtonElement>;
   contentId: string;
@@ -35,10 +35,10 @@ type DropdownMenuContextValue = {
   modal: boolean;
 };
 
-const [DropdownMenuProvider, useDropdownMenuContext] =
-  createDropdownMenuContext<DropdownMenuContextValue>(DROPDOWN_MENU_NAME);
+const [ComboboxProvider, useComboboxContext] =
+  createComboboxContext<ComboboxContextValue>(COMBOBOX_NAME);
 
-interface DropdownMenuProps {
+interface ComboboxProps {
   children?: React.ReactNode;
   dir?: Direction;
   open?: boolean;
@@ -47,11 +47,11 @@ interface DropdownMenuProps {
   modal?: boolean;
 }
 
-const DropdownMenu: React.FC<DropdownMenuProps> = (
-  props: ScopedProps<DropdownMenuProps>,
+const Combobox: React.FC<ComboboxProps> = (
+  props: ScopedProps<ComboboxProps>,
 ) => {
   const {
-    __scopeDropdownMenu,
+    __scopeCombobox,
     children,
     dir,
     open: openProp,
@@ -59,7 +59,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = (
     onOpenChange,
     modal = true,
   } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+  const menuScope = useMenuScope(__scopeCombobox);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const [open = false, setOpen] = useControllableState({
     prop: openProp,
@@ -68,8 +68,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = (
   });
 
   return (
-    <DropdownMenuProvider
-      scope={__scopeDropdownMenu}
+    <ComboboxProvider
+      scope={__scopeCombobox}
       triggerId={useId()}
       triggerRef={triggerRef}
       contentId={useId()}
@@ -90,31 +90,31 @@ const DropdownMenu: React.FC<DropdownMenuProps> = (
       >
         {children}
       </MenuPrimitive.Root>
-    </DropdownMenuProvider>
+    </ComboboxProvider>
   );
 };
 
-DropdownMenu.displayName = DROPDOWN_MENU_NAME;
+Combobox.displayName = COMBOBOX_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuTrigger
+ * ComboboxTrigger
  * -----------------------------------------------------------------------------------------------*/
 
-const TRIGGER_NAME = "DropdownMenuTrigger";
+const TRIGGER_NAME = "ComboboxTrigger";
 
-type DropdownMenuTriggerElement = React.ElementRef<typeof Primitive.button>;
+type ComboboxTriggerElement = React.ElementRef<typeof Primitive.button>;
 type PrimitiveButtonProps = React.ComponentPropsWithoutRef<
   typeof Primitive.button
 >;
-interface DropdownMenuTriggerProps extends PrimitiveButtonProps {}
+interface ComboboxTriggerProps extends PrimitiveButtonProps {}
 
-const DropdownMenuTrigger = React.forwardRef<
-  DropdownMenuTriggerElement,
-  DropdownMenuTriggerProps
->((props: ScopedProps<DropdownMenuTriggerProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, disabled = false, ...triggerProps } = props;
-  const context = useDropdownMenuContext(TRIGGER_NAME, __scopeDropdownMenu);
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxTrigger = React.forwardRef<
+  ComboboxTriggerElement,
+  ComboboxTriggerProps
+>((props: ScopedProps<ComboboxTriggerProps>, forwardedRef) => {
+  const { __scopeCombobox, disabled = false, ...triggerProps } = props;
+  const context = useComboboxContext(TRIGGER_NAME, __scopeCombobox);
+  const menuScope = useMenuScope(__scopeCombobox);
   return (
     <MenuPrimitive.Anchor asChild {...menuScope}>
       <Primitive.button
@@ -152,51 +152,48 @@ const DropdownMenuTrigger = React.forwardRef<
   );
 });
 
-DropdownMenuTrigger.displayName = TRIGGER_NAME;
+ComboboxTrigger.displayName = TRIGGER_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuPortal
+ * ComboboxPortal
  * -----------------------------------------------------------------------------------------------*/
 
-const PORTAL_NAME = "DropdownMenuPortal";
+const PORTAL_NAME = "ComboboxPortal";
 
 type MenuPortalProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.Portal
 >;
-interface DropdownMenuPortalProps extends MenuPortalProps {}
+interface ComboboxPortalProps extends MenuPortalProps {}
 
-const DropdownMenuPortal: React.FC<DropdownMenuPortalProps> = (
-  props: ScopedProps<DropdownMenuPortalProps>,
+const ComboboxPortal: React.FC<ComboboxPortalProps> = (
+  props: ScopedProps<ComboboxPortalProps>,
 ) => {
-  const { __scopeDropdownMenu, ...portalProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+  const { __scopeCombobox, ...portalProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
   return <MenuPrimitive.Portal {...menuScope} {...portalProps} />;
 };
 
-DropdownMenuPortal.displayName = PORTAL_NAME;
+ComboboxPortal.displayName = PORTAL_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuContent
+ * ComboboxContent
  * -----------------------------------------------------------------------------------------------*/
 
-const CONTENT_NAME = "DropdownMenuContent";
+const CONTENT_NAME = "ComboboxContent";
 
-type DropdownMenuContentElement = React.ElementRef<
-  typeof MenuPrimitive.Content
->;
+type ComboboxContentElement = React.ElementRef<typeof MenuPrimitive.Content>;
 type MenuContentProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.Content
 >;
-interface DropdownMenuContentProps
-  extends Omit<MenuContentProps, "onEntryFocus"> {}
+interface ComboboxContentProps extends Omit<MenuContentProps, "onEntryFocus"> {}
 
-const DropdownMenuContent = React.forwardRef<
-  DropdownMenuContentElement,
-  DropdownMenuContentProps
->((props: ScopedProps<DropdownMenuContentProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...contentProps } = props;
-  const context = useDropdownMenuContext(CONTENT_NAME, __scopeDropdownMenu);
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxContent = React.forwardRef<
+  ComboboxContentElement,
+  ComboboxContentProps
+>((props: ScopedProps<ComboboxContentProps>, forwardedRef) => {
+  const { __scopeCombobox, ...contentProps } = props;
+  const context = useComboboxContext(CONTENT_NAME, __scopeCombobox);
+  const menuScope = useMenuScope(__scopeCombobox);
   const hasInteractedOutsideRef = React.useRef(false);
 
   return (
@@ -247,101 +244,100 @@ const DropdownMenuContent = React.forwardRef<
   );
 });
 
-DropdownMenuContent.displayName = CONTENT_NAME;
+ComboboxContent.displayName = CONTENT_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuGroup
+ * ComboboxGroup
  * -----------------------------------------------------------------------------------------------*/
 
-const GROUP_NAME = "DropdownMenuGroup";
+const GROUP_NAME = "ComboboxGroup";
 
-type DropdownMenuGroupElement = React.ElementRef<typeof MenuPrimitive.Group>;
+type ComboboxGroupElement = React.ElementRef<typeof MenuPrimitive.Group>;
 type MenuGroupProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.Group
 >;
-interface DropdownMenuGroupProps extends MenuGroupProps {}
+interface ComboboxGroupProps extends MenuGroupProps {}
 
-const DropdownMenuGroup = React.forwardRef<
-  DropdownMenuGroupElement,
-  DropdownMenuGroupProps
->((props: ScopedProps<DropdownMenuGroupProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...groupProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxGroup = React.forwardRef<
+  ComboboxGroupElement,
+  ComboboxGroupProps
+>((props: ScopedProps<ComboboxGroupProps>, forwardedRef) => {
+  const { __scopeCombobox, ...groupProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
   return (
     <MenuPrimitive.Group {...menuScope} {...groupProps} ref={forwardedRef} />
   );
 });
 
-DropdownMenuGroup.displayName = GROUP_NAME;
+ComboboxGroup.displayName = GROUP_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuLabel
+ * ComboboxLabel
  * -----------------------------------------------------------------------------------------------*/
 
-const LABEL_NAME = "DropdownMenuLabel";
+const LABEL_NAME = "ComboboxLabel";
 
-type DropdownMenuLabelElement = React.ElementRef<typeof MenuPrimitive.Label>;
+type ComboboxLabelElement = React.ElementRef<typeof MenuPrimitive.Label>;
 type MenuLabelProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.Label
 >;
-interface DropdownMenuLabelProps extends MenuLabelProps {}
+interface ComboboxLabelProps extends MenuLabelProps {}
 
-const DropdownMenuLabel = React.forwardRef<
-  DropdownMenuLabelElement,
-  DropdownMenuLabelProps
->((props: ScopedProps<DropdownMenuLabelProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...labelProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxLabel = React.forwardRef<
+  ComboboxLabelElement,
+  ComboboxLabelProps
+>((props: ScopedProps<ComboboxLabelProps>, forwardedRef) => {
+  const { __scopeCombobox, ...labelProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
   return (
     <MenuPrimitive.Label {...menuScope} {...labelProps} ref={forwardedRef} />
   );
 });
 
-DropdownMenuLabel.displayName = LABEL_NAME;
+ComboboxLabel.displayName = LABEL_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuItem
+ * ComboboxItem
  * -----------------------------------------------------------------------------------------------*/
 
-const ITEM_NAME = "DropdownMenuItem";
+const ITEM_NAME = "ComboboxItem";
 
-type DropdownMenuItemElement = React.ElementRef<typeof MenuPrimitive.Item>;
+type ComboboxItemElement = React.ElementRef<typeof MenuPrimitive.Item>;
 type MenuItemProps = React.ComponentPropsWithoutRef<typeof MenuPrimitive.Item>;
-interface DropdownMenuItemProps extends MenuItemProps {}
+interface ComboboxItemProps extends MenuItemProps {}
 
-const DropdownMenuItem = React.forwardRef<
-  DropdownMenuItemElement,
-  DropdownMenuItemProps
->((props: ScopedProps<DropdownMenuItemProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...itemProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
-  return (
-    <MenuPrimitive.Item {...menuScope} {...itemProps} ref={forwardedRef} />
-  );
-});
+const ComboboxItem = React.forwardRef<ComboboxItemElement, ComboboxItemProps>(
+  (props: ScopedProps<ComboboxItemProps>, forwardedRef) => {
+    const { __scopeCombobox, ...itemProps } = props;
+    const menuScope = useMenuScope(__scopeCombobox);
+    return (
+      <MenuPrimitive.Item {...menuScope} {...itemProps} ref={forwardedRef} />
+    );
+  },
+);
 
-DropdownMenuItem.displayName = ITEM_NAME;
+ComboboxItem.displayName = ITEM_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuCheckboxItem
+ * ComboboxCheckboxItem
  * -----------------------------------------------------------------------------------------------*/
 
-const CHECKBOX_ITEM_NAME = "DropdownMenuCheckboxItem";
+const CHECKBOX_ITEM_NAME = "ComboboxCheckboxItem";
 
-type DropdownMenuCheckboxItemElement = React.ElementRef<
+type ComboboxCheckboxItemElement = React.ElementRef<
   typeof MenuPrimitive.CheckboxItem
 >;
 type MenuCheckboxItemProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.CheckboxItem
 >;
-interface DropdownMenuCheckboxItemProps extends MenuCheckboxItemProps {}
+interface ComboboxCheckboxItemProps extends MenuCheckboxItemProps {}
 
-const DropdownMenuCheckboxItem = React.forwardRef<
-  DropdownMenuCheckboxItemElement,
-  DropdownMenuCheckboxItemProps
->((props: ScopedProps<DropdownMenuCheckboxItemProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...checkboxItemProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxCheckboxItem = React.forwardRef<
+  ComboboxCheckboxItemElement,
+  ComboboxCheckboxItemProps
+>((props: ScopedProps<ComboboxCheckboxItemProps>, forwardedRef) => {
+  const { __scopeCombobox, ...checkboxItemProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
   return (
     <MenuPrimitive.CheckboxItem
       {...menuScope}
@@ -351,28 +347,28 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   );
 });
 
-DropdownMenuCheckboxItem.displayName = CHECKBOX_ITEM_NAME;
+ComboboxCheckboxItem.displayName = CHECKBOX_ITEM_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuRadioGroup
+ * ComboboxRadioGroup
  * -----------------------------------------------------------------------------------------------*/
 
-const RADIO_GROUP_NAME = "DropdownMenuRadioGroup";
+const RADIO_GROUP_NAME = "ComboboxRadioGroup";
 
-type DropdownMenuRadioGroupElement = React.ElementRef<
+type ComboboxRadioGroupElement = React.ElementRef<
   typeof MenuPrimitive.RadioGroup
 >;
 type MenuRadioGroupProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.RadioGroup
 >;
-interface DropdownMenuRadioGroupProps extends MenuRadioGroupProps {}
+interface ComboboxRadioGroupProps extends MenuRadioGroupProps {}
 
-const DropdownMenuRadioGroup = React.forwardRef<
-  DropdownMenuRadioGroupElement,
-  DropdownMenuRadioGroupProps
->((props: ScopedProps<DropdownMenuRadioGroupProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...radioGroupProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxRadioGroup = React.forwardRef<
+  ComboboxRadioGroupElement,
+  ComboboxRadioGroupProps
+>((props: ScopedProps<ComboboxRadioGroupProps>, forwardedRef) => {
+  const { __scopeCombobox, ...radioGroupProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
   return (
     <MenuPrimitive.RadioGroup
       {...menuScope}
@@ -382,28 +378,28 @@ const DropdownMenuRadioGroup = React.forwardRef<
   );
 });
 
-DropdownMenuRadioGroup.displayName = RADIO_GROUP_NAME;
+ComboboxRadioGroup.displayName = RADIO_GROUP_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuRadioItem
+ * ComboboxRadioItem
  * -----------------------------------------------------------------------------------------------*/
 
-const RADIO_ITEM_NAME = "DropdownMenuRadioItem";
+const RADIO_ITEM_NAME = "ComboboxRadioItem";
 
-type DropdownMenuRadioItemElement = React.ElementRef<
+type ComboboxRadioItemElement = React.ElementRef<
   typeof MenuPrimitive.RadioItem
 >;
 type MenuRadioItemProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.RadioItem
 >;
-interface DropdownMenuRadioItemProps extends MenuRadioItemProps {}
+interface ComboboxRadioItemProps extends MenuRadioItemProps {}
 
-const DropdownMenuRadioItem = React.forwardRef<
-  DropdownMenuRadioItemElement,
-  DropdownMenuRadioItemProps
->((props: ScopedProps<DropdownMenuRadioItemProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...radioItemProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxRadioItem = React.forwardRef<
+  ComboboxRadioItemElement,
+  ComboboxRadioItemProps
+>((props: ScopedProps<ComboboxRadioItemProps>, forwardedRef) => {
+  const { __scopeCombobox, ...radioItemProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
   return (
     <MenuPrimitive.RadioItem
       {...menuScope}
@@ -413,28 +409,28 @@ const DropdownMenuRadioItem = React.forwardRef<
   );
 });
 
-DropdownMenuRadioItem.displayName = RADIO_ITEM_NAME;
+ComboboxRadioItem.displayName = RADIO_ITEM_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuItemIndicator
+ * ComboboxItemIndicator
  * -----------------------------------------------------------------------------------------------*/
 
-const INDICATOR_NAME = "DropdownMenuItemIndicator";
+const INDICATOR_NAME = "ComboboxItemIndicator";
 
-type DropdownMenuItemIndicatorElement = React.ElementRef<
+type ComboboxItemIndicatorElement = React.ElementRef<
   typeof MenuPrimitive.ItemIndicator
 >;
 type MenuItemIndicatorProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.ItemIndicator
 >;
-interface DropdownMenuItemIndicatorProps extends MenuItemIndicatorProps {}
+interface ComboboxItemIndicatorProps extends MenuItemIndicatorProps {}
 
-const DropdownMenuItemIndicator = React.forwardRef<
-  DropdownMenuItemIndicatorElement,
-  DropdownMenuItemIndicatorProps
->((props: ScopedProps<DropdownMenuItemIndicatorProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...itemIndicatorProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxItemIndicator = React.forwardRef<
+  ComboboxItemIndicatorElement,
+  ComboboxItemIndicatorProps
+>((props: ScopedProps<ComboboxItemIndicatorProps>, forwardedRef) => {
+  const { __scopeCombobox, ...itemIndicatorProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
   return (
     <MenuPrimitive.ItemIndicator
       {...menuScope}
@@ -444,28 +440,28 @@ const DropdownMenuItemIndicator = React.forwardRef<
   );
 });
 
-DropdownMenuItemIndicator.displayName = INDICATOR_NAME;
+ComboboxItemIndicator.displayName = INDICATOR_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuSeparator
+ * ComboboxSeparator
  * -----------------------------------------------------------------------------------------------*/
 
-const SEPARATOR_NAME = "DropdownMenuSeparator";
+const SEPARATOR_NAME = "ComboboxSeparator";
 
-type DropdownMenuSeparatorElement = React.ElementRef<
+type ComboboxSeparatorElement = React.ElementRef<
   typeof MenuPrimitive.Separator
 >;
 type MenuSeparatorProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.Separator
 >;
-interface DropdownMenuSeparatorProps extends MenuSeparatorProps {}
+interface ComboboxSeparatorProps extends MenuSeparatorProps {}
 
-const DropdownMenuSeparator = React.forwardRef<
-  DropdownMenuSeparatorElement,
-  DropdownMenuSeparatorProps
->((props: ScopedProps<DropdownMenuSeparatorProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...separatorProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxSeparator = React.forwardRef<
+  ComboboxSeparatorElement,
+  ComboboxSeparatorProps
+>((props: ScopedProps<ComboboxSeparatorProps>, forwardedRef) => {
+  const { __scopeCombobox, ...separatorProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
   return (
     <MenuPrimitive.Separator
       {...menuScope}
@@ -475,55 +471,55 @@ const DropdownMenuSeparator = React.forwardRef<
   );
 });
 
-DropdownMenuSeparator.displayName = SEPARATOR_NAME;
+ComboboxSeparator.displayName = SEPARATOR_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuArrow
+ * ComboboxArrow
  * -----------------------------------------------------------------------------------------------*/
 
-const ARROW_NAME = "DropdownMenuArrow";
+const ARROW_NAME = "ComboboxArrow";
 
-type DropdownMenuArrowElement = React.ElementRef<typeof MenuPrimitive.Arrow>;
+type ComboboxArrowElement = React.ElementRef<typeof MenuPrimitive.Arrow>;
 type MenuArrowProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.Arrow
 >;
-interface DropdownMenuArrowProps extends MenuArrowProps {}
+interface ComboboxArrowProps extends MenuArrowProps {}
 
-const DropdownMenuArrow = React.forwardRef<
-  DropdownMenuArrowElement,
-  DropdownMenuArrowProps
->((props: ScopedProps<DropdownMenuArrowProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...arrowProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxArrow = React.forwardRef<
+  ComboboxArrowElement,
+  ComboboxArrowProps
+>((props: ScopedProps<ComboboxArrowProps>, forwardedRef) => {
+  const { __scopeCombobox, ...arrowProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
   return (
     <MenuPrimitive.Arrow {...menuScope} {...arrowProps} ref={forwardedRef} />
   );
 });
 
-DropdownMenuArrow.displayName = ARROW_NAME;
+ComboboxArrow.displayName = ARROW_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuSub
+ * ComboboxSub
  * -----------------------------------------------------------------------------------------------*/
 
-interface DropdownMenuSubProps {
+interface ComboboxSubProps {
   children?: React.ReactNode;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?(open: boolean): void;
 }
 
-const DropdownMenuSub: React.FC<DropdownMenuSubProps> = (
-  props: ScopedProps<DropdownMenuSubProps>,
+const ComboboxSub: React.FC<ComboboxSubProps> = (
+  props: ScopedProps<ComboboxSubProps>,
 ) => {
   const {
-    __scopeDropdownMenu,
+    __scopeCombobox,
     children,
     open: openProp,
     onOpenChange,
     defaultOpen,
   } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+  const menuScope = useMenuScope(__scopeCombobox);
   const [open = false, setOpen] = useControllableState({
     prop: openProp,
     defaultProp: defaultOpen,
@@ -538,25 +534,25 @@ const DropdownMenuSub: React.FC<DropdownMenuSubProps> = (
 };
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuSubTrigger
+ * ComboboxSubTrigger
  * -----------------------------------------------------------------------------------------------*/
 
-const SUB_TRIGGER_NAME = "DropdownMenuSubTrigger";
+const SUB_TRIGGER_NAME = "ComboboxSubTrigger";
 
-type DropdownMenuSubTriggerElement = React.ElementRef<
+type ComboboxSubTriggerElement = React.ElementRef<
   typeof MenuPrimitive.SubTrigger
 >;
 type MenuSubTriggerProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.SubTrigger
 >;
-interface DropdownMenuSubTriggerProps extends MenuSubTriggerProps {}
+interface ComboboxSubTriggerProps extends MenuSubTriggerProps {}
 
-const DropdownMenuSubTrigger = React.forwardRef<
-  DropdownMenuSubTriggerElement,
-  DropdownMenuSubTriggerProps
->((props: ScopedProps<DropdownMenuSubTriggerProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...subTriggerProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxSubTrigger = React.forwardRef<
+  ComboboxSubTriggerElement,
+  ComboboxSubTriggerProps
+>((props: ScopedProps<ComboboxSubTriggerProps>, forwardedRef) => {
+  const { __scopeCombobox, ...subTriggerProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
   return (
     <MenuPrimitive.SubTrigger
       {...menuScope}
@@ -566,28 +562,26 @@ const DropdownMenuSubTrigger = React.forwardRef<
   );
 });
 
-DropdownMenuSubTrigger.displayName = SUB_TRIGGER_NAME;
+ComboboxSubTrigger.displayName = SUB_TRIGGER_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * DropdownMenuSubContent
+ * ComboboxSubContent
  * -----------------------------------------------------------------------------------------------*/
 
-const SUB_CONTENT_NAME = "DropdownMenuSubContent";
+const SUB_CONTENT_NAME = "ComboboxSubContent";
 
-type DropdownMenuSubContentElement = React.ElementRef<
-  typeof MenuPrimitive.Content
->;
+type ComboboxSubContentElement = React.ElementRef<typeof MenuPrimitive.Content>;
 type MenuSubContentProps = React.ComponentPropsWithoutRef<
   typeof MenuPrimitive.SubContent
 >;
-interface DropdownMenuSubContentProps extends MenuSubContentProps {}
+interface ComboboxSubContentProps extends MenuSubContentProps {}
 
-const DropdownMenuSubContent = React.forwardRef<
-  DropdownMenuSubContentElement,
-  DropdownMenuSubContentProps
->((props: ScopedProps<DropdownMenuSubContentProps>, forwardedRef) => {
-  const { __scopeDropdownMenu, ...subContentProps } = props;
-  const menuScope = useMenuScope(__scopeDropdownMenu);
+const ComboboxSubContent = React.forwardRef<
+  ComboboxSubContentElement,
+  ComboboxSubContentProps
+>((props: ScopedProps<ComboboxSubContentProps>, forwardedRef) => {
+  const { __scopeCombobox, ...subContentProps } = props;
+  const menuScope = useMenuScope(__scopeCombobox);
 
   return (
     <MenuPrimitive.SubContent
@@ -598,62 +592,60 @@ const DropdownMenuSubContent = React.forwardRef<
         ...props.style,
         // re-namespace exposed content custom properties
         ...{
-          "--radix-dropdown-menu-content-transform-origin":
+          "--combobox-content-transform-origin":
             "var(--radix-popper-transform-origin)",
-          "--radix-dropdown-menu-content-available-width":
+          "--combobox-content-available-width":
             "var(--radix-popper-available-width)",
-          "--radix-dropdown-menu-content-available-height":
+          "--combobox-content-available-height":
             "var(--radix-popper-available-height)",
-          "--radix-dropdown-menu-trigger-width":
-            "var(--radix-popper-anchor-width)",
-          "--radix-dropdown-menu-trigger-height":
-            "var(--radix-popper-anchor-height)",
+          "--combobox-trigger-width": "var(--radix-popper-anchor-width)",
+          "--combobox-trigger-height": "var(--radix-popper-anchor-height)",
         },
       }}
     />
   );
 });
 
-DropdownMenuSubContent.displayName = SUB_CONTENT_NAME;
+ComboboxSubContent.displayName = SUB_CONTENT_NAME;
 
 /* -----------------------------------------------------------------------------------------------*/
 
-const Root = DropdownMenu;
-const Trigger = DropdownMenuTrigger;
-const Portal = DropdownMenuPortal;
-const Content = DropdownMenuContent;
-const Group = DropdownMenuGroup;
-const Label = DropdownMenuLabel;
-const Item = DropdownMenuItem;
-const CheckboxItem = DropdownMenuCheckboxItem;
-const RadioGroup = DropdownMenuRadioGroup;
-const RadioItem = DropdownMenuRadioItem;
-const ItemIndicator = DropdownMenuItemIndicator;
-const Separator = DropdownMenuSeparator;
-const Arrow = DropdownMenuArrow;
-const Sub = DropdownMenuSub;
-const SubTrigger = DropdownMenuSubTrigger;
-const SubContent = DropdownMenuSubContent;
+const Root = Combobox;
+const Trigger = ComboboxTrigger;
+const Portal = ComboboxPortal;
+const Content = ComboboxContent;
+const Group = ComboboxGroup;
+const Label = ComboboxLabel;
+const Item = ComboboxItem;
+const CheckboxItem = ComboboxCheckboxItem;
+const RadioGroup = ComboboxRadioGroup;
+const RadioItem = ComboboxRadioItem;
+const ItemIndicator = ComboboxItemIndicator;
+const Separator = ComboboxSeparator;
+const Arrow = ComboboxArrow;
+const Sub = ComboboxSub;
+const SubTrigger = ComboboxSubTrigger;
+const SubContent = ComboboxSubContent;
 
 export {
-  createDropdownMenuScope,
+  createComboboxScope,
   //
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuPortal,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuLabel,
-  DropdownMenuItem,
-  DropdownMenuCheckboxItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuItemIndicator,
-  DropdownMenuSeparator,
-  DropdownMenuArrow,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
+  Combobox,
+  ComboboxTrigger,
+  ComboboxPortal,
+  ComboboxContent,
+  ComboboxGroup,
+  ComboboxLabel,
+  ComboboxItem,
+  ComboboxCheckboxItem,
+  ComboboxRadioGroup,
+  ComboboxRadioItem,
+  ComboboxItemIndicator,
+  ComboboxSeparator,
+  ComboboxArrow,
+  ComboboxSub,
+  ComboboxSubTrigger,
+  ComboboxSubContent,
   //
   Root,
   Trigger,
@@ -673,20 +665,20 @@ export {
   SubContent,
 };
 export type {
-  DropdownMenuProps,
-  DropdownMenuTriggerProps,
-  DropdownMenuPortalProps,
-  DropdownMenuContentProps,
-  DropdownMenuGroupProps,
-  DropdownMenuLabelProps,
-  DropdownMenuItemProps,
-  DropdownMenuCheckboxItemProps,
-  DropdownMenuRadioGroupProps,
-  DropdownMenuRadioItemProps,
-  DropdownMenuItemIndicatorProps,
-  DropdownMenuSeparatorProps,
-  DropdownMenuArrowProps,
-  DropdownMenuSubProps,
-  DropdownMenuSubTriggerProps,
-  DropdownMenuSubContentProps,
+  ComboboxProps,
+  ComboboxTriggerProps,
+  ComboboxPortalProps,
+  ComboboxContentProps,
+  ComboboxGroupProps,
+  ComboboxLabelProps,
+  ComboboxItemProps,
+  ComboboxCheckboxItemProps,
+  ComboboxRadioGroupProps,
+  ComboboxRadioItemProps,
+  ComboboxItemIndicatorProps,
+  ComboboxSeparatorProps,
+  ComboboxArrowProps,
+  ComboboxSubProps,
+  ComboboxSubTriggerProps,
+  ComboboxSubContentProps,
 };
