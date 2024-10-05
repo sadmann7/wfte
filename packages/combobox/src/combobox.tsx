@@ -228,16 +228,14 @@ const ComboboxContent = React.forwardRef<
         ...props.style,
         // re-namespace exposed content custom properties
         ...{
-          "--radix-dropdown-menu-content-transform-origin":
+          "--combobox-content-transform-origin":
             "var(--radix-popper-transform-origin)",
-          "--radix-dropdown-menu-content-available-width":
+          "--combobox-content-available-width":
             "var(--radix-popper-available-width)",
-          "--radix-dropdown-menu-content-available-height":
+          "--combobox-content-available-height":
             "var(--radix-popper-available-height)",
-          "--radix-dropdown-menu-trigger-width":
-            "var(--radix-popper-anchor-width)",
-          "--radix-dropdown-menu-trigger-height":
-            "var(--radix-popper-anchor-height)",
+          "--combobox-trigger-width": "var(--radix-popper-anchor-width)",
+          "--combobox-trigger-height": "var(--radix-popper-anchor-height)",
         },
       }}
     />
