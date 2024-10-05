@@ -12,6 +12,8 @@ import type { Scope } from "@radix-ui/react-context";
 
 type Direction = "ltr" | "rtl";
 
+type TValue = string | string[];
+
 /* -------------------------------------------------------------------------------------------------
  * Combobox
  * -----------------------------------------------------------------------------------------------*/
@@ -25,7 +27,7 @@ const [createComboboxContext, createComboboxScope] = createContextScope(
 );
 const useMenuScope = createMenuScope();
 
-type ComboboxContextValue = {
+interface ComboboxContextValue {
   triggerId: string;
   triggerRef: React.RefObject<HTMLButtonElement>;
   contentId: string;
@@ -33,7 +35,11 @@ type ComboboxContextValue = {
   onOpenChange(open: boolean): void;
   onOpenToggle(): void;
   modal: boolean;
-};
+  multiple?: boolean;
+  value?: TValue | TValue[];
+  onValueChange(value: TValue | TValue[]): void;
+  disabled?: boolean;
+}
 
 const [ComboboxProvider, useComboboxContext] =
   createComboboxContext<ComboboxContextValue>(COMBOBOX_NAME);
@@ -45,11 +51,13 @@ interface ComboboxProps {
   defaultOpen?: boolean;
   onOpenChange?(open: boolean): void;
   modal?: boolean;
+  defaultValue?: TValue | TValue[];
+  value?: TValue | TValue[];
+  onValueChange?(value: TValue | TValue[]): void;
+  disabled?: boolean;
 }
 
-const Combobox: React.FC<ComboboxProps> = (
-  props: ScopedProps<ComboboxProps>,
-) => {
+function Combobox(props: ScopedProps<ComboboxProps>) {
   const {
     __scopeCombobox,
     children,
@@ -58,6 +66,10 @@ const Combobox: React.FC<ComboboxProps> = (
     defaultOpen,
     onOpenChange,
     modal = true,
+    disabled = false,
+    defaultValue,
+    value: valueProp,
+    onValueChange,
   } = props;
   const menuScope = useMenuScope(__scopeCombobox);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -65,6 +77,12 @@ const Combobox: React.FC<ComboboxProps> = (
     prop: openProp,
     defaultProp: defaultOpen,
     onChange: onOpenChange,
+  });
+
+  const [value, setValue] = useControllableState({
+    prop: valueProp,
+    defaultProp: defaultValue,
+    onChange: onValueChange,
   });
 
   return (
@@ -80,6 +98,9 @@ const Combobox: React.FC<ComboboxProps> = (
         [setOpen],
       )}
       modal={modal}
+      value={value}
+      onValueChange={setValue}
+      disabled={disabled}
     >
       <MenuPrimitive.Root
         {...menuScope}
@@ -92,7 +113,7 @@ const Combobox: React.FC<ComboboxProps> = (
       </MenuPrimitive.Root>
     </ComboboxProvider>
   );
-};
+}
 
 Combobox.displayName = COMBOBOX_NAME;
 
@@ -317,99 +338,6 @@ const ComboboxItem = React.forwardRef<ComboboxItemElement, ComboboxItemProps>(
 ComboboxItem.displayName = ITEM_NAME;
 
 /* -------------------------------------------------------------------------------------------------
- * ComboboxCheckboxItem
- * -----------------------------------------------------------------------------------------------*/
-
-const CHECKBOX_ITEM_NAME = "ComboboxCheckboxItem";
-
-type ComboboxCheckboxItemElement = React.ElementRef<
-  typeof MenuPrimitive.CheckboxItem
->;
-type MenuCheckboxItemProps = React.ComponentPropsWithoutRef<
-  typeof MenuPrimitive.CheckboxItem
->;
-interface ComboboxCheckboxItemProps extends MenuCheckboxItemProps {}
-
-const ComboboxCheckboxItem = React.forwardRef<
-  ComboboxCheckboxItemElement,
-  ComboboxCheckboxItemProps
->((props: ScopedProps<ComboboxCheckboxItemProps>, forwardedRef) => {
-  const { __scopeCombobox, ...checkboxItemProps } = props;
-  const menuScope = useMenuScope(__scopeCombobox);
-  return (
-    <MenuPrimitive.CheckboxItem
-      {...menuScope}
-      {...checkboxItemProps}
-      ref={forwardedRef}
-    />
-  );
-});
-
-ComboboxCheckboxItem.displayName = CHECKBOX_ITEM_NAME;
-
-/* -------------------------------------------------------------------------------------------------
- * ComboboxRadioGroup
- * -----------------------------------------------------------------------------------------------*/
-
-const RADIO_GROUP_NAME = "ComboboxRadioGroup";
-
-type ComboboxRadioGroupElement = React.ElementRef<
-  typeof MenuPrimitive.RadioGroup
->;
-type MenuRadioGroupProps = React.ComponentPropsWithoutRef<
-  typeof MenuPrimitive.RadioGroup
->;
-interface ComboboxRadioGroupProps extends MenuRadioGroupProps {}
-
-const ComboboxRadioGroup = React.forwardRef<
-  ComboboxRadioGroupElement,
-  ComboboxRadioGroupProps
->((props: ScopedProps<ComboboxRadioGroupProps>, forwardedRef) => {
-  const { __scopeCombobox, ...radioGroupProps } = props;
-  const menuScope = useMenuScope(__scopeCombobox);
-  return (
-    <MenuPrimitive.RadioGroup
-      {...menuScope}
-      {...radioGroupProps}
-      ref={forwardedRef}
-    />
-  );
-});
-
-ComboboxRadioGroup.displayName = RADIO_GROUP_NAME;
-
-/* -------------------------------------------------------------------------------------------------
- * ComboboxRadioItem
- * -----------------------------------------------------------------------------------------------*/
-
-const RADIO_ITEM_NAME = "ComboboxRadioItem";
-
-type ComboboxRadioItemElement = React.ElementRef<
-  typeof MenuPrimitive.RadioItem
->;
-type MenuRadioItemProps = React.ComponentPropsWithoutRef<
-  typeof MenuPrimitive.RadioItem
->;
-interface ComboboxRadioItemProps extends MenuRadioItemProps {}
-
-const ComboboxRadioItem = React.forwardRef<
-  ComboboxRadioItemElement,
-  ComboboxRadioItemProps
->((props: ScopedProps<ComboboxRadioItemProps>, forwardedRef) => {
-  const { __scopeCombobox, ...radioItemProps } = props;
-  const menuScope = useMenuScope(__scopeCombobox);
-  return (
-    <MenuPrimitive.RadioItem
-      {...menuScope}
-      {...radioItemProps}
-      ref={forwardedRef}
-    />
-  );
-});
-
-ComboboxRadioItem.displayName = RADIO_ITEM_NAME;
-
-/* -------------------------------------------------------------------------------------------------
  * ComboboxItemIndicator
  * -----------------------------------------------------------------------------------------------*/
 
@@ -615,9 +543,6 @@ const Content = ComboboxContent;
 const Group = ComboboxGroup;
 const Label = ComboboxLabel;
 const Item = ComboboxItem;
-const CheckboxItem = ComboboxCheckboxItem;
-const RadioGroup = ComboboxRadioGroup;
-const RadioItem = ComboboxRadioItem;
 const ItemIndicator = ComboboxItemIndicator;
 const Separator = ComboboxSeparator;
 const Arrow = ComboboxArrow;
@@ -626,57 +551,48 @@ const SubTrigger = ComboboxSubTrigger;
 const SubContent = ComboboxSubContent;
 
 export {
-  createComboboxScope,
+  Arrow,
   //
   Combobox,
-  ComboboxTrigger,
-  ComboboxPortal,
+  ComboboxArrow,
   ComboboxContent,
   ComboboxGroup,
-  ComboboxLabel,
   ComboboxItem,
-  ComboboxCheckboxItem,
-  ComboboxRadioGroup,
-  ComboboxRadioItem,
   ComboboxItemIndicator,
+  ComboboxLabel,
+  ComboboxPortal,
   ComboboxSeparator,
-  ComboboxArrow,
   ComboboxSub,
-  ComboboxSubTrigger,
   ComboboxSubContent,
+  ComboboxSubTrigger,
+  ComboboxTrigger,
+  Content,
+  createComboboxScope,
+  Group,
+  Item,
+  ItemIndicator,
+  Label,
+  Portal,
   //
   Root,
-  Trigger,
-  Portal,
-  Content,
-  Group,
-  Label,
-  Item,
-  CheckboxItem,
-  RadioGroup,
-  RadioItem,
-  ItemIndicator,
   Separator,
-  Arrow,
   Sub,
-  SubTrigger,
   SubContent,
+  SubTrigger,
+  Trigger,
 };
 export type {
-  ComboboxProps,
-  ComboboxTriggerProps,
-  ComboboxPortalProps,
+  ComboboxArrowProps,
   ComboboxContentProps,
   ComboboxGroupProps,
-  ComboboxLabelProps,
-  ComboboxItemProps,
-  ComboboxCheckboxItemProps,
-  ComboboxRadioGroupProps,
-  ComboboxRadioItemProps,
   ComboboxItemIndicatorProps,
+  ComboboxItemProps,
+  ComboboxLabelProps,
+  ComboboxPortalProps,
+  ComboboxProps,
   ComboboxSeparatorProps,
-  ComboboxArrowProps,
+  ComboboxSubContentProps,
   ComboboxSubProps,
   ComboboxSubTriggerProps,
-  ComboboxSubContentProps,
+  ComboboxTriggerProps,
 };
