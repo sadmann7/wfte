@@ -9,11 +9,12 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "biome check .",
-    "lint:fix": "biome check . --apply",
-    "typecheck": "turbo typecheck"
+    "lint:fix": "biome check . --write",
+    "typecheck": "turbo typecheck",
+    "check": "turbo lint typecheck"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.5.3",
+    "@biomejs/biome": "1.9.3",
     "expect-type": "^1.0.0",
     "rimraf": "^6.0.1",
     "turbo": "^2.1.3",

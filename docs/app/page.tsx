@@ -1,7 +1,7 @@
 import { HomeLayout } from "fumadocs-ui/home-layout";
 import Link from "next/link";
 
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/config";
 
 export default function IndexPage() {
@@ -13,10 +13,10 @@ export default function IndexPage() {
       }}
       links={[{ text: "Docs", url: siteConfig.links.docs }]}
     >
-      <section className="container flex flex-col justify-center items-center gap-6 pb-8 pt-6 md:py-10">
+      <section className="container flex flex-col items-center justify-center gap-6 pt-6 pb-8 md:py-10">
         <div className="max-w-5xl space-y-8">
           <h1
-            className="font-heading text-balance animate-fade-up bg-gradient-to-br from-foreground/80 to-muted-foreground bg-clip-text text-center text-transparent text-5xl/[3rem] font-bold opacity-0 drop-shadow-sm md:text-7xl/[5rem]"
+            className="animate-fade-up text-balance bg-gradient-to-br from-foreground/80 to-muted-foreground bg-clip-text text-center font-bold font-heading text-5xl/[3rem] text-transparent opacity-0 drop-shadow-sm md:text-7xl/[5rem]"
             style={{ animationDelay: "0.20s", animationFillMode: "forwards" }}
           >
             {siteConfig.name}
@@ -28,7 +28,7 @@ export default function IndexPage() {
             {siteConfig.description}
           </p>
           <div
-            className="flex justify-center gap-4 animate-fade-up opacity-0"
+            className="flex animate-fade-up justify-center gap-4 opacity-0"
             style={{ animationDelay: "0.40s", animationFillMode: "forwards" }}
           >
             <Button asChild>

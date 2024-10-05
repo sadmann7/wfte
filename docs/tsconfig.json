@@ -18,9 +18,7 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "jsx": "preserve",
-    "plugins": [
-      { "name": "next" }
-    ],
+    "plugins": [{ "name": "next" }],
     "incremental": true,
     /* Path Aliases */
     "baseUrl": ".",
@@ -28,6 +26,15 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.tsx", "**/*.ts", "**/*.mdx", ".next/types/**/*.ts", "*.js", "tailwind.config.ts", "next.config.mjs"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.tsx",
+    "**/*.ts",
+    "**/*.mdx",
+    ".next/types/**/*.ts",
+    "*.js",
+    "tailwind.config.ts",
+    "next.config.mjs"
+  ],
   "exclude": ["node_modules"]
 }
