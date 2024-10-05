@@ -17,17 +17,17 @@ jobs:
         uses: actions/checkout@v4
       - uses: ./.github/setup
 
-      - name: Build
-        run: bun run build
+      # - name: Build
+      #   run: bun run build
 
-      # Using custom token `MY_GITHUB_TOKEN` with more access to avoid rate limiting
-      - name: Create Release
-        id: changeset
-        uses: changesets/action@v1.4.1
-        with:
-          commit: "chore(release): 📦 version packages"
-          title: "chore(release): 📦  version packages"
-          publish: bunx changeset publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # # Using custom token `MY_GITHUB_TOKEN` with more access to avoid rate limiting
+      # - name: Create Release
+      #   id: changeset
+      #   uses: changesets/action@v1.4.1
+      #   with:
+      #     commit: "chore(release): 📦 version packages"
+      #     title: "chore(release): 📦  version packages"
+      #     publish: bunx changeset publish
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
