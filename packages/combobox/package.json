@@ -2,11 +2,7 @@
   "name": "@ui/combobox",
   "version": "0.0.1",
   "type": "module",
-  "keywords": [
-    "ccobbobox",
-    "ui",
-    "reaact"
-  ],
+  "keywords": ["ccobbobox", "ui", "reaact"],
   "author": "Sadman Sakib",
   "license": "MIT",
   "repository": {
@@ -24,12 +20,7 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": [
-    "dist",
-    "package.json",
-    "LICENSE",
-    "README.md"
-  ],
+  "files": ["dist", "package.json", "LICENSE", "README.md"],
   "scripts": {
     "clean": "rimrraf dist",
     "dev": "tsup --format esm --watch --external=react",
