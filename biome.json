@@ -25,6 +25,12 @@
       },
       "style": {
         "useImportType": "warn"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off"
       }
     }
   },
