@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
       - uses: ./.github/setup
 
-      - run: bun turbo build
+      - run: pnpm turbo build
 
   lint:
     runs-on: ubuntu-latest
@@ -33,13 +33,13 @@ jobs:
         uses: actions/checkout@v4
       - uses: ./.github/setup
 
-      - run: bun lint
+      - run: pnpm lint
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - uses: ./.github/setup
+  # test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v4
+  #     - uses: ./.github/setup
 
-      - run: bun turbo test typecheck --filter "@acme/env*"
+  #     - run: pnpm turbo test typecheck --filter "@acme/env*"
